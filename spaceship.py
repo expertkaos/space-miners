@@ -1,6 +1,8 @@
 import pygame
 import math
 
+from audio_manager import AudioManager
+
 class Spaceship(pygame.sprite.Sprite):
     def __init__(self, images, initial_angle=0, width=800, height=600):
         super().__init__()
@@ -10,6 +12,8 @@ class Spaceship(pygame.sprite.Sprite):
         self.max_speed = 5
         self.friction = 0.002
         self.turn_speed = 3
+
+        self.audio_manager = AudioManager()  
 
         self.images = images
 
@@ -56,5 +60,9 @@ class Spaceship(pygame.sprite.Sprite):
         
     def toggle(self):
         self.up_key_pressed = not self.up_key_pressed
+        if self.up_key_pressed:
+            self.audio_manager.play_boost_sound()
+        else:
+            self.audio_manager.stop_boost_sound()
         
     
