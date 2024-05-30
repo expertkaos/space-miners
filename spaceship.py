@@ -4,7 +4,7 @@ import math
 from audio_manager import AudioManager
 
 class Spaceship(pygame.sprite.Sprite):
-    def __init__(self, images, initial_angle=0, width=800, height=600):
+    def __init__(self, images, screen_width, screen_height):
         super().__init__()
         self.velocity_x = 0
         self.velocity_y = 0
@@ -22,10 +22,11 @@ class Spaceship(pygame.sprite.Sprite):
         self.image_index_up_released = 0 # Image index when the up key is released
         self.image = self.images[self.image_index_up_released] # Initially, set the image to the one displayed when the up key is released
         self.rect = self.image.get_rect()
-        self.angle = initial_angle
+        self.initial_angle = 0
+        self.angle = self.initial_angle
 
-        self.width = width
-        self.height = height
+        self.width = screen_width
+        self.height = screen_height
 
     def rotate(self, angle_change):
         self.angle += angle_change
@@ -47,12 +48,11 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect.x += self.velocity_x
         self.rect.y += self.velocity_y
 
-        # an experiment to Ensure the spaceship stays within the screen bounds
-        # self.rect.x %= self.width
-        # self.rect.y %= self.height
+        # Calculate the offset to center the player
+        self.offset_x = self.width // 2 - self.rect.centerx
+        self.offset_y = self.height // 2 - self.rect.centery
 
     def image_index(self):
-        
         if self.up_key_pressed:
             return self.image_index_up_pressed
         else:
@@ -64,5 +64,8 @@ class Spaceship(pygame.sprite.Sprite):
             self.audio_manager.play_boost_sound()
         else:
             self.audio_manager.stop_boost_sound()
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.move(self.offset_x, self.offset_y))
         
     

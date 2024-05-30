@@ -1,8 +1,8 @@
 import pygame
 import sys
-import math
 from spaceship import Spaceship
 from pause_menu import PauseMenu
+from background import Background
 
 # Initialize pygame
 pygame.init()
@@ -16,16 +16,6 @@ pygame.display.set_caption("Space Minners")
 # Load background tile image
 background_img = pygame.image.load("assets/space.jpg").convert()
 
-# grab backround image width and height
-bg_width = background_img.get_width()
-bg_height = background_img.get_height()
-
-bg_rect = background_img.get_rect()
-
-# calculate how many tiles needed to fill screen
-x_tiles = math.ceil(screen_width / bg_width) + 1
-y_tiles = math.ceil(screen_height /bg_height) + 1
-
 #Load spaceship images
 SPACESHIP_IMG = pygame.image.load('assets/ship/spaceship.png').convert_alpha()
 BOOSTED_SPACESHIP_IMG = pygame.image.load('assets/ship/boosted_spaceship.png').convert_alpha()
@@ -34,19 +24,10 @@ BOOSTED_SPACESHIP_IMG = pygame.image.load('assets/ship/boosted_spaceship.png').c
 SPACESHIP_IMG = pygame.transform.scale(SPACESHIP_IMG, (60, 50))
 BOOSTED_SPACESHIP_IMG = pygame.transform.scale(BOOSTED_SPACESHIP_IMG, (60, 50))
 
-WHITE = (255, 255, 255)
-FONT_SIZE = 36
-
-# Create player sprite
-spaceship = Spaceship([SPACESHIP_IMG, BOOSTED_SPACESHIP_IMG], initial_angle=0, width=screen_width, height=screen_height)
-
-all_sprites = pygame.sprite.Group()
-all_sprites.add(spaceship)
-
-running = True
-
-# Create a PauseMenu instance
-pause_menu = PauseMenu(width=screen_width, height=screen_height)
+# Create class instance
+spaceship = Spaceship([SPACESHIP_IMG, BOOSTED_SPACESHIP_IMG], screen_width, screen_height)
+background = Background(background_img, screen_width, screen_height)
+pause_menu = PauseMenu(screen_width, screen_height)
 
 # Main game loop
 running = True
@@ -79,28 +60,10 @@ while running:
             spaceship.accelerate()
             
         spaceship.update()
+        background.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
 
-        # Calculate the offset to center the player
-        offset_x = screen_width // 2 - spaceship.rect.centerx
-        offset_y = screen_height // 2 - spaceship.rect.centery
-
-    # set background displacement
-    x_displacement = spaceship.rect.centerx - (math.ceil(spaceship.rect.centerx / bg_width) * bg_width)
-    y_displacement = spaceship.rect.centery - (math.ceil(spaceship.rect.centery / bg_height) * bg_height)
-    
-    # draw background tiles
-    for x in range(-x_tiles, x_tiles):
-        for y in range(-y_tiles, y_tiles):
-            screen.blit(background_img, (x * bg_width +  x_displacement, y  * bg_height + y_displacement))
-
-            #grid to display each background tile
-            bg_rect.x = x * bg_width + x_displacement
-            bg_rect.y= y * bg_height + y_displacement
-            pygame.draw.rect(screen, (255, 0, 0), bg_rect, 1)
-    
-     # Draw spaceship
-    screen.blit(spaceship.image, spaceship.rect.move(offset_x, offset_y))
-    
+    background.draw(screen)
+    spaceship.draw(screen)
     pause_menu.draw(screen)
 
     pygame.display.flip()

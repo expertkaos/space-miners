@@ -2,10 +2,12 @@ import pygame
 import sys
 
 class Button:
-    def __init__(self, text, position, callback, width=800, height=600, font_size=36, white=(255, 255, 255)):
+    def __init__(self, text, position, callback, screen_width, screen_height):
         self.text = text
-        self.font = pygame.font.Font(None, font_size)
-        self.text_surface = self.font.render(text, True, white)
+        self.font_color = (255, 255, 255)
+        self.font_size = 36
+        self.font = pygame.font.Font(None, self.font_size)
+        self.text_surface = self.font.render(text, True, self.font_color)
         self.rect = self.text_surface.get_rect(center=position)
         self.callback = callback
         
@@ -19,26 +21,27 @@ class Button:
                 self.callback()
 
 class PauseMenu:
-    def __init__(self, width, height, font_size=36, white=(255, 255, 255)):
+    def __init__(self, screen_width, screen_height):
         self.is_paused = False
         self.selected_button = 0  # Index of the currently selected button
 
         self.font_path = "assets/pixelfont.ttf"
-        self.font_size = font_size
+        self.font_color = (255, 255, 255)
+        self.font_size= 36
 
-        self.width, self.height = width, height
+        self.width, self.height = screen_width, screen_height
 
         self.custom_font = pygame.font.Font(self.font_path, self.font_size)# Load the font
 
-        self.paused_text = self.custom_font.render("Game Paused", True, white)
+        self.paused_text = self.custom_font.render("Game Paused", True, self.font_color)
         
         self.buttons = [
-            Button("Resume", (width // 2, height // 2 - 0), self.resume_game, self.width, self.height),
-            Button("Menu", (width // 2, height // 2 + 75), self.quit_game, self.width, self.height),
-            Button("Quit", (width // 2, height // 2 + 150), self.quit_game, self.width, self.height),
+            Button("Resume", (self.width // 2, self.height // 2 - 0), self.resume_game, self.width, self.height),
+            Button("Menu", (self.width // 2, self.height // 2 + 75), self.quit_game, self.width, self.height),
+            Button("Quit", (self.width // 2, self.height // 2 + 150), self.quit_game, self.width, self.height),
         ]
 
-        self.surface = pygame.Surface((width,height), pygame.SRCALPHA)
+        self.surface = pygame.Surface((self.width,self.height), pygame.SRCALPHA)
 
     def toggle(self):
         self.is_paused = not self.is_paused
