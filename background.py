@@ -24,8 +24,8 @@ class Background(pygame.sprite.Sprite):
         self.spaceship_centerx = spaceship_centerx
         self.spaceship_centery = spaceship_centery
 
-        self.paralex_x = self.spaceship_centerx // 2
-        self.paralex_y = self.spaceship_centery // 2
+        self.paralex_x = self.spaceship_centerx 
+        self.paralex_y = self.spaceship_centery
 
         # set background displacement
         self.x_displacement = self.paralex_x  - (math.ceil(self.paralex_x / self.bg_width) * self.bg_width)

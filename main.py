@@ -17,19 +17,18 @@ pygame.display.set_caption("Space Minners")
 
 # Load assset images 
 
-background_img = pygame.image.load("assets/space.jpg").convert()
+background_img = pygame.image.load("assets/space.png").convert()
 
 SPACESHIP_IMG = pygame.image.load('assets/ship/spaceship.png').convert_alpha()
-BOOSTED_SPACESHIP_IMG = pygame.image.load('assets/ship/boosted_spaceship.png').convert_alpha()
+BOOST_IMG = pygame.image.load('assets/ship/boost.png').convert_alpha()
 
 PLANETS_IMG = pygame.image.load('assets/planets.png').convert_alpha()
 
 # Resize images
-SPACESHIP_IMG = pygame.transform.scale(SPACESHIP_IMG, (60, 50))
-BOOSTED_SPACESHIP_IMG = pygame.transform.scale(BOOSTED_SPACESHIP_IMG, (60, 50))
+SPACESHIP_IMG = pygame.transform.scale(SPACESHIP_IMG, (50, 50))
 
 # Create class instance
-spaceship = Spaceship([SPACESHIP_IMG, BOOSTED_SPACESHIP_IMG], screen_width, screen_height)
+spaceship = Spaceship(SPACESHIP_IMG, BOOST_IMG, screen_width, screen_height)
 background = Background(background_img, screen_width, screen_height)
 pause_menu = PauseMenu(screen_width, screen_height)
 planets = Planets(PLANETS_IMG)
@@ -37,7 +36,7 @@ planets = Planets(PLANETS_IMG)
 # Main game loop
 running = True
 while running:
-
+    screen.fill((0,0,0))
     # event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -58,9 +57,9 @@ while running:
     if not pause_menu.is_paused:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
-            spaceship.angle += spaceship.turn_speed
+            spaceship.rotate(-spaceship.turn_speed)
         if keys[pygame.K_RIGHT]:
-            spaceship.angle -= spaceship.turn_speed
+            spaceship.rotate(+spaceship.turn_speed)
         if keys[pygame.K_UP]:
             spaceship.accelerate()
             

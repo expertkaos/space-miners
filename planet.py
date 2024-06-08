@@ -25,18 +25,18 @@ class Planets(pygame.sprite.Sprite):
         self.spaceship_centery = spaceship_centery
 
         # set displacement
-        self.x_displacement_planet = - self.spaceship_centerx
-        self.y_displacement_planet = - self.spaceship_centery
+        self.x_displacement_planet = self.spaceship_centerx
+        self.y_displacement_planet = self.spaceship_centery
     
     def draw(self, screen):    
         
         for i in range(len(self.planets_list)):
-            screen.blit(self.planet_img[i], (self.planets_list[i][0] - self.x_displacement_planet, self.planets_list[i][1] - self.y_displacement_planet))
+            screen.blit(self.planet_img[i], (self.planets_list[i][0] + self.x_displacement_planet, self.planets_list[i][1] + self.y_displacement_planet))
             
-            pygame.draw.rect(screen, (255, 0, 0), self.planet_img[i].get_rect(topleft=(self.planets_list[i][0] - self.x_displacement_planet, self.planets_list[i][1] - self.y_displacement_planet)), 2)
+            pygame.draw.rect(screen, (255, 0, 0), self.planet_img[i].get_rect(topleft=(self.planets_list[i][0] + self.x_displacement_planet, self.planets_list[i][1] + self.y_displacement_planet)), 2)
 
             # Get the position and radius for the circle
-            circle_center = self.planets_list[i][0] - self.x_displacement_planet + 250, self.planets_list[i][1] - self.y_displacement_planet + 250
+            circle_center = self.planets_list[i][0] + self.x_displacement_planet + 250, self.planets_list[i][1] + self.y_displacement_planet + 250
             circle_radius = 250  # Assuming the sprite is 500x500 pixels
 
             # Draw a circular perimeter around the sprite
