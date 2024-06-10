@@ -7,9 +7,8 @@ class Spaceship(pygame.sprite.Sprite):
         super().__init__()
         self.velocity_x = 0
         self.velocity_y = 0
-        self.acceleration = 0.1
-        self.max_speed = 5
-        self.friction = 0.002
+        self.acceleration = 0.15
+        self.friction = 0
         self.turn_speed = 3
 
         self.audio_manager = AudioManager()
@@ -20,6 +19,11 @@ class Spaceship(pygame.sprite.Sprite):
         self.up_key_pressed = False
         self.image = self.spaceship_image
         self.rect = self.image.get_rect()
+
+        # Set the ship location
+        self.x = 0
+        self.y = 0
+
         self.initial_angle = 0
         self.angle = self.initial_angle
 
@@ -39,6 +43,10 @@ class Spaceship(pygame.sprite.Sprite):
         self.velocity_y += self.acceleration * math.cos(rad_angle)
         self.velocity_x += self.acceleration * math.sin(rad_angle)
 
+    def apply_gravity (self, x, y):
+        self.velocity_x += x
+        self.velocity_y += y
+
     def update(self):
         self.frame_counter += 1
         if self.up_key_pressed and self.frame_counter % 4 == 0:  # Spawn trail every 4 frames
@@ -55,8 +63,10 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.velocity_x *= (1 - self.friction)
         self.velocity_y *= (1 - self.friction)
-        self.rect.x += self.velocity_x
-        self.rect.y += self.velocity_y
+        # self.rect.x += self.velocity_x
+        # self.rect.y += self.velocity_y
+        self.x += self.velocity_x
+        self.y += self.velocity_y
 
         self.image = pygame.transform.rotate(self.spaceship_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
@@ -76,11 +86,11 @@ class Spaceship(pygame.sprite.Sprite):
         trail_velocity_y = math.cos(rad_angle) * 5
 
         # Define the radius of the circle around which the trail will spawn
-        circle_radius = 35 
+        trail_radius = 35 
 
         # Calculate the offset from the center of the screen
-        offset_x = circle_radius * math.sin(rad_angle)
-        offset_y = circle_radius * - math.cos(rad_angle)
+        offset_x = trail_radius * math.sin(rad_angle)
+        offset_y = trail_radius * - math.cos(rad_angle)
 
         # Calculate the trail's position around the circle
         trail_x = self.width // 2 + offset_x
@@ -113,4 +123,3 @@ class Spaceship(pygame.sprite.Sprite):
             trail_rect = trail['rotated_image'].get_rect(center=(trail['x'], trail['y']))
             screen.blit(trail['rotated_image'], trail_rect)
         screen.blit(self.image, self.rect.move(self.offset_x, self.offset_y))
-        pygame.draw.rect(screen, (255,0,0), pygame.Rect(400 - self.offset_x,300 - self.offset_y , 10, 10))

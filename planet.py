@@ -1,44 +1,68 @@
 import pygame
 import random
+import math
+
+
+PLANET_WIDTH = 500
+PLANET_HEIGHT = 500
+GRAVITY_STRENGTH = 17857
+DISTANCE_STRECH = 1
+
 
 class Planets(pygame.sprite.Sprite):
+
     def __init__(self, planet_image):
         super().__init__()
         self.planet_image = planet_image
         self.planet_rect = self.planet_image.get_rect()
+        self.planet_distance = 0
 
         self.total_planets = 7
         self.planet_image_width = self.planet_image.get_width()
         
         self.planets_list = [ ]
         self.planet_img = [ ]
-        for i in range(50):
-            self.each_plannet_img = pygame.Rect(random.randint(0, self.total_planets - 1) * (self.planet_image_width // self.total_planets), 0, 500, 500)
+        for i in range(2):
+            self.each_planet_img = pygame.Rect(random.randint(0, self.total_planets - 1) * (self.planet_image_width // self.total_planets), 0, 500, 500)
            
-            self.planet_img.append(self.planet_image.subsurface(self.each_plannet_img))
+            self.planet_img.append(self.planet_image.subsurface(self.each_planet_img))
             
-            self.planets_list.append((random.randint(-10000, 10000),random.randint(-10000, 10000)))
+            self.planets_list.append((random.randint(-1000, 1000),random.randint(-1000, 1000)))
+            
+    def get_gravity(self, spaceship_centerx, spaceship_centery):
+        gravity_x = 0
+        gravity_y = 0
+        for planet in self.planets_list:
+            x_distance = planet[0] + (PLANET_WIDTH//2) - spaceship_centerx 
+            y_distance = planet[1] + (PLANET_HEIGHT//2) - spaceship_centery 
 
+            planet_distance = math.sqrt(x_distance**2 + y_distance**2)  
+            if planet == self.planets_list[1]:
+                print(planet_distance)
+            planet_gravity = (1 / (planet_distance/DISTANCE_STRECH)**2) * GRAVITY_STRENGTH
+            #planet_gravity =  10 * 250**2/ planet_distance**2
+
+            if planet_distance <= (PLANET_WIDTH//2):
+                gravity_x += 0
+                gravity_y += 0
+            else:
+                gravity_x += x_distance / planet_distance * planet_gravity
+                gravity_y += y_distance / planet_distance * planet_gravity
+
+        gravity_y = gravity_y / len(self.planets_list)
+        gravity_x = gravity_x / len(self.planets_list)
+        # print(f"({gravity_x}, {gravity_y})")
+
+        return (gravity_x, gravity_y)
+            
     
     def update(self, spaceship_centerx, spaceship_centery):
-        self.spaceship_centerx = spaceship_centerx
-        self.spaceship_centery = spaceship_centery
 
         # set displacement
-        self.x_displacement_planet = self.spaceship_centerx
-        self.y_displacement_planet = self.spaceship_centery
+        self.x_displacement_planet = spaceship_centerx
+        self.y_displacement_planet = spaceship_centery
+        
     
     def draw(self, screen):    
-        
         for i in range(len(self.planets_list)):
             screen.blit(self.planet_img[i], (self.planets_list[i][0] + self.x_displacement_planet, self.planets_list[i][1] + self.y_displacement_planet))
-            
-            pygame.draw.rect(screen, (255, 0, 0), self.planet_img[i].get_rect(topleft=(self.planets_list[i][0] + self.x_displacement_planet, self.planets_list[i][1] + self.y_displacement_planet)), 2)
-
-            # Get the position and radius for the circle
-            circle_center = self.planets_list[i][0] + self.x_displacement_planet + 250, self.planets_list[i][1] + self.y_displacement_planet + 250
-            circle_radius = 250  # Assuming the sprite is 500x500 pixels
-
-            # Draw a circular perimeter around the sprite
-            pygame.draw.circle(screen, (255, 0, 0), circle_center, circle_radius, 2)
-        

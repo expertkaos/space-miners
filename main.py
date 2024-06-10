@@ -62,10 +62,15 @@ while running:
             spaceship.rotate(+spaceship.turn_speed)
         if keys[pygame.K_UP]:
             spaceship.accelerate()
-            
+        
+        grav = planets.get_gravity(-spaceship.x, -spaceship.y)
+        spaceship.apply_gravity(-grav[0], -grav[1])
+
         spaceship.update()
-        planets.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
-        background.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
+        # planets.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
+        # background.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
+        planets.update(spaceship_centerx=spaceship.x + (screen_width/2), spaceship_centery=spaceship.y + (screen_height/2))
+        background.update(spaceship_centerx=spaceship.x + (screen_width/2), spaceship_centery=spaceship.y + (screen_height/2))
 
     background.draw(screen)
     planets.draw(screen)
