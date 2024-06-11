@@ -22,7 +22,7 @@ class Planets(pygame.sprite.Sprite):
         
         self.planets_list = [ ]
         self.planet_img = [ ]
-        for i in range(2):
+        for i in range(3):
             self.each_planet_img = pygame.Rect(random.randint(0, self.total_planets - 1) * (self.planet_image_width // self.total_planets), 0, 500, 500)
            
             self.planet_img.append(self.planet_image.subsurface(self.each_planet_img))
@@ -40,7 +40,6 @@ class Planets(pygame.sprite.Sprite):
             if planet == self.planets_list[1]:
                 print(planet_distance)
             planet_gravity = (1 / (planet_distance/DISTANCE_STRECH)**2) * GRAVITY_STRENGTH
-            #planet_gravity =  10 * 250**2/ planet_distance**2
 
             if planet_distance <= (PLANET_WIDTH//2):
                 gravity_x += 0
@@ -51,7 +50,6 @@ class Planets(pygame.sprite.Sprite):
 
         gravity_y = gravity_y / len(self.planets_list)
         gravity_x = gravity_x / len(self.planets_list)
-        # print(f"({gravity_x}, {gravity_y})")
 
         return (gravity_x, gravity_y)
             

@@ -24,8 +24,8 @@ class Background(pygame.sprite.Sprite):
         self.spaceship_centerx = spaceship_centerx
         self.spaceship_centery = spaceship_centery
 
-        self.paralex_x = self.spaceship_centerx 
-        self.paralex_y = self.spaceship_centery
+        self.paralex_x = self.spaceship_centerx // 2 
+        self.paralex_y = self.spaceship_centery // 2
 
         # set background displacement
         self.x_displacement = self.paralex_x  - (math.ceil(self.paralex_x / self.bg_width) * self.bg_width)
@@ -36,8 +36,3 @@ class Background(pygame.sprite.Sprite):
         for x in range(-self.x_tiles, self.x_tiles):
             for y in range(-self.y_tiles, self.y_tiles):
                 screen.blit(self.background_img, (x * self.bg_width +  self.x_displacement, y  * self.bg_height + self.y_displacement))
-
-                # #grid to display each background tile
-                # self.bg_rect.x = x * self.bg_width + self.x_displacement
-                # self.bg_rect.y= y * self.bg_height + self.y_displacement
-                # pygame.draw.rect(screen, (255, 0, 0), self.bg_rect, 1)

@@ -55,7 +55,7 @@ class Spaceship(pygame.sprite.Sprite):
         # Update trails
         self.trails = [trail for trail in self.trails if trail['alpha'] > 5 and  trail['size'] > 5]
         for trail in self.trails:
-            trail['size'] -= 0.4
+            trail['size'] -= 0.4  
             trail['image'] = pygame.transform.scale(self.trail_image, (int(trail['size']), int(trail['size'])))
             trail['alpha'] -= 5  # Decrease the alpha to fade out the trail
             trail['image'].set_alpha(trail['alpha'])
@@ -63,8 +63,6 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.velocity_x *= (1 - self.friction)
         self.velocity_y *= (1 - self.friction)
-        # self.rect.x += self.velocity_x
-        # self.rect.y += self.velocity_y
         self.x += self.velocity_x
         self.y += self.velocity_y
 
@@ -117,7 +115,6 @@ class Spaceship(pygame.sprite.Sprite):
 
     def draw(self, screen):
         for trail in self.trails:
-            # trail_rect = trail['image'].get_rect(center=(trail['x'] + self.offset_x, trail['y'] + self.offset_y))
             trail['x'] = trail['x'] + trail['vx'] 
             trail['y'] = trail['y'] + trail['vy']
             trail_rect = trail['rotated_image'].get_rect(center=(trail['x'], trail['y']))
