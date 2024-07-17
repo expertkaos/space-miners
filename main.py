@@ -5,6 +5,7 @@ from spaceship import Spaceship
 from pause_menu import PauseMenu
 from background import Background
 from planet import Planets
+from camera import Camera
 
 # Initialize pygame
 pygame.init()
@@ -28,10 +29,11 @@ PLANETS_IMG = pygame.image.load('assets/planets.png').convert_alpha()
 SPACESHIP_IMG = pygame.transform.scale(SPACESHIP_IMG, (50, 50))
 
 # Create class instance
-spaceship = Spaceship(SPACESHIP_IMG, BOOST_IMG, screen_width, screen_height)
-background = Background(background_img, screen_width, screen_height)
+camera = Camera(screen)
+spaceship = Spaceship(SPACESHIP_IMG, BOOST_IMG, screen_width, screen_height, camera)
+background = Background(background_img, screen_width, screen_height, camera)
 pause_menu = PauseMenu(screen_width, screen_height)
-planets = Planets(PLANETS_IMG)
+planets = Planets(PLANETS_IMG, camera)
 
 # Main game loop
 running = True
@@ -64,17 +66,13 @@ while running:
             spaceship.accelerate()
         
         grav = planets.get_gravity(-spaceship.x, -spaceship.y)
-        spaceship.apply_gravity(-grav[0], -grav[1])
+        spaceship.apply_gravity(grav[0], grav[1])
 
         spaceship.update()
-        # planets.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
-        # background.update(spaceship_centerx=spaceship.rect.centerx, spaceship_centery=spaceship.rect.centery)
-        planets.update(spaceship_centerx=spaceship.x + (screen_width/2), spaceship_centery=spaceship.y + (screen_height/2))
-        background.update(spaceship_centerx=spaceship.x + (screen_width/2), spaceship_centery=spaceship.y + (screen_height/2))
 
-    background.draw(screen)
-    planets.draw(screen)
-    spaceship.draw(screen)
+    background.draw()
+    planets.draw()
+    spaceship.draw()
 
     pause_menu.draw(screen)
 
