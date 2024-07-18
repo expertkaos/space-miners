@@ -13,6 +13,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.acceleration = 0.15
         self.friction = 0
         self.turn_speed = 3
+        self.max_speed = 10
 
         self.audio_manager = AudioManager()
 
@@ -23,7 +24,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.image = self.spaceship_image
         self.rect = self.image.get_rect()
 
-        # Set the ship location
+        # Set the ship beginning location
         self.x = 0
         self.y = 0
 
@@ -42,9 +43,17 @@ class Spaceship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def accelerate(self):
+        # initial speed
         rad_angle = math.radians(self.angle)
         self.velocity_y += self.acceleration * math.cos(rad_angle)
         self.velocity_x += self.acceleration * math.sin(rad_angle)
+
+        # Limit the speed
+        speed = math.sqrt(self.velocity_x**2 + self.velocity_y**2)
+        if speed > self.max_speed:
+            scale = self.max_speed / speed
+            self.velocity_x *= scale
+            self.velocity_y *= scale
 
     def apply_gravity(self, x, y):
         self.velocity_x += x
@@ -52,7 +61,7 @@ class Spaceship(pygame.sprite.Sprite):
 
     def update(self):
         self.frame_counter += 1
-        if self.up_key_pressed and self.frame_counter % 4 == 0:  # Spawn trail every 4 frames
+        if self.up_key_pressed and self.frame_counter % 2 == 0:  # Spawn trail every 2 frames
             self.spawn_trail()
 
         # Update trails
@@ -75,7 +84,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.camera.moveCamera(self.x, self.y)
 
     def spawn_trail(self):
-        trail_size = 35  # Set the trail size to 25 pixels
+        trail_size = 30  # Set the trail size to 25 pixels
         trail_image = pygame.transform.scale(self.trail_image, (trail_size, trail_size))
         trail_image.set_alpha(255)  # Set the initial alpha value
 
@@ -86,7 +95,7 @@ class Spaceship(pygame.sprite.Sprite):
         trail_velocity_y = math.cos(rad_angle) * 5
 
         # Define the radius of the circle around which the trail will spawn
-        trail_radius = 35
+        trail_radius = 40
 
         # Calculate the offset from the spaceship's position
         offset_x = trail_radius * math.sin(rad_angle)
@@ -116,6 +125,6 @@ class Spaceship(pygame.sprite.Sprite):
 
     def draw(self):
         for trail in self.trails:
-            self.camera.drawImage(trail['rotated_image'], trail['x'] + trail['size'] //2, trail['y']+ trail['size'] //2)
-
+            self.camera.drawImage(trail['rotated_image'], trail['x'] + 25 - (trail['size'] // 2), trail['y'] + 25 - (trail['size'] // 2))
+        
         self.camera.drawImage(self.image, self.rect.x , self.rect.y)

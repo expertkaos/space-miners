@@ -65,7 +65,7 @@ while running:
         if keys[pygame.K_UP]:
             spaceship.accelerate()
         
-        grav = planets.get_gravity(-spaceship.x, -spaceship.y)
+        grav = planets.get_gravity(spaceship.x, spaceship.y)
         spaceship.apply_gravity(grav[0], grav[1])
 
         spaceship.update()
@@ -75,7 +75,6 @@ while running:
     spaceship.draw()
 
     pause_menu.draw(screen)
-
     pygame.display.flip()
 
     pygame.time.Clock().tick(60)
