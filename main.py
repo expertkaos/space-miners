@@ -24,6 +24,7 @@ SPACESHIP_IMG = pygame.image.load('assets/ship/spaceship.png').convert_alpha()
 BOOST_IMG = pygame.image.load('assets/ship/boost.png').convert_alpha()
 
 PLANETS_IMG = pygame.image.load('assets/planets.png').convert_alpha()
+EFFECT_IMG = pygame.image.load('assets/planets_fogs.png').convert_alpha()
 
 # Resize images
 SPACESHIP_IMG = pygame.transform.scale(SPACESHIP_IMG, (50, 50))
@@ -33,7 +34,7 @@ camera = Camera(screen)
 spaceship = Spaceship(SPACESHIP_IMG, BOOST_IMG, screen_width, screen_height, camera)
 background = Background(background_img, screen_width, screen_height, camera)
 pause_menu = PauseMenu(screen_width, screen_height)
-planets = Planets(PLANETS_IMG, camera)
+planets = Planets(PLANETS_IMG, EFFECT_IMG, camera)
 
 # Main game loop
 running = True

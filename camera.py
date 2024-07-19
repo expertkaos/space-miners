@@ -56,6 +56,31 @@ class Camera:
         coords = self.getScreenCoords(x, y, paralex)
         self.screen.blit(image, coords)
 
+    
+    def drawOffsetImage(self,image, x, y, offset): 
+        """Offset value is a fraction. Value of 1 equls no offset.
+        """
+        image_x, image_y = self.getScreenCoords(x, y)
+        imagewidth = image.get_width()
+        imageheight = image.get_height()
+        centreImageX = image_x + imagewidth / 2
+        centreImageY = image_y + imageheight / 2
+        centreScreenX = self.screen_width / 2
+        centreScreenY = self.screen_height / 2
+        distanceX = centreScreenX - centreImageX
+        distanceY = centreScreenY - centreImageY
+        offsetX = distanceX * offset
+        offsetY = distanceY * offset
+        
+        newCentreX = centreScreenX - offsetX 
+        newCentreY = centreScreenY - offsetY 
+
+        newX =  newCentreX - imagewidth / 2
+        newY = newCentreY - imageheight / 2
+
+        offsetCoords = (newX, newY)
+        self.screen.blit(image, offsetCoords)
+
     def drawTiles(self, image, paralex = 1):
         screen_x = self.camera_area.x // paralex
         screen_y = self.camera_area.y // paralex
@@ -71,7 +96,10 @@ class Camera:
         for x in range(x1,x2):
             for y in range(y1,y2):
                 self.drawImage(image, x * image_width, y * image_height, paralex)
-
+    
+    def drawCircle(self, colour, pos, radius, paralex = 1):
+        coords = self.getScreenCoords(pos[0], pos[1], paralex)
+        pygame.draw.circle(self.screen, colour, coords, radius, 1)
 
     def getScreenCoords(self, x, y, paralex = 1):
         return (x - (self.camera_area.x / paralex), y - (self.camera_area.y / paralex))

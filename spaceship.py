@@ -10,10 +10,10 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.velocity_x = 0
         self.velocity_y = 0
-        self.acceleration = 0.15
+        self.acceleration = 0.25
         self.friction = 0
         self.turn_speed = 3
-        self.max_speed = 10
+        self.max_speed = 20
 
         self.audio_manager = AudioManager()
 
