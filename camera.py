@@ -1,6 +1,7 @@
 from typing import Any
 import math
 import pygame
+import random
 
 class Camera:
     def __init__(self, screen):
@@ -16,50 +17,32 @@ class Camera:
         self.Camera_centre_x = self.camera_area.x  - (self.screen_width // 2)
         self.Camera_centre_y = self.camera_area.y  - (self.screen_height / 2)
 
-        # Camera settings
-        self.camera_swithinpeed = 3
-        self.camera_limit = 150  # Maximum distance the camera can lag behind
+        # Shake parameters
+        self.shake_duration = 0
+        self.shake_strength = 0
 
+        # Target position for the camera
+        self.target_x = 0
+        self.target_y = 0
 
     def moveCamera(self, x, y):
-        centre_x = x
-        centre_y = y
+        self.target_x = x - (self.screen_width / 2)
+        self.target_y = y - (self.screen_height / 2)
 
-        self.camera_area.x = centre_x - (self.screen_width/2)
-        self.camera_area.y = centre_y - (self.screen_height/2)
+    def update(self):
+        # Apply shake effect
+        self.apply_shake()
 
-    def update_camera(self, player_x, player_y):
-        # Calculate the center of the camera
-        cam_centre_x = self.camera_area.x + self.screen_width // 2
-        cam_centre_y = self.camera_area.y + self.screen_height // 2
+        # Set the camera position
+        self.camera_area.x = self.target_x
+        self.camera_area.y = self.target_y
 
-        # Calculate the difference between the player and the camera center
-        diff_x = player_x - cam_centre_x
-        diff_y = player_y - cam_centre_y
-
-        # Define a smoothing factor (0 < smoothing < 1)
-        smoothing = 0.1
-
-        # Update camera position based on player position
-        if abs(diff_x) > self.camera_limit:
-            self.camera_area.x += diff_x - (self.camera_limit if diff_x > 0 else -self.camera_limit)
-        else:
-            self.camera_area.x += diff_x * smoothing  # Smoothly move towards the player
-
-        if abs(diff_y) > self.camera_limit:
-            self.camera_area.y += diff_y - (self.camera_limit if diff_y > 0 else -self.camera_limit)
-        else:
-            self.camera_area.y += diff_y * smoothing  # Smoothly move towards
-
-
-    def drawImage(self,image, x, y, paralex = 1):
+    def drawImage(self, image, x, y, paralex=1):
         coords = self.getScreenCoords(x, y, paralex)
         self.screen.blit(image, coords)
 
-    
-    def drawOffsetImage(self,image, x, y, offset): 
-        """Offset value is a fraction. Value of 1 equls no offset.
-        """
+    def drawOffsetImage(self, image, x, y, offset):
+        """Offset value is a fraction. Value of 1 equals no offset."""
         image_x, image_y = self.getScreenCoords(x, y)
         imagewidth = image.get_width()
         imageheight = image.get_height()
@@ -75,17 +58,17 @@ class Camera:
         newCentreX = centreScreenX - offsetX 
         newCentreY = centreScreenY - offsetY 
 
-        newX =  newCentreX - imagewidth / 2
+        newX = newCentreX - imagewidth / 2
         newY = newCentreY - imageheight / 2
 
         offsetCoords = (newX, newY)
         self.screen.blit(image, offsetCoords)
 
-    def drawTiles(self, image, paralex = 1):
+    def drawTiles(self, image, paralex=1):
         screen_x = self.camera_area.x // paralex
         screen_y = self.camera_area.y // paralex
 
-        image_width = image.get_width() 
+        image_width = image.get_width()
         image_height = image.get_height()
 
         x1 = math.floor(screen_x / image_width)
@@ -93,14 +76,27 @@ class Camera:
         x2 = math.ceil((screen_x + self.camera_area.width) / image_width)
         y2 = math.ceil((screen_y + self.camera_area.height) / image_height)
 
-        for x in range(x1,x2):
-            for y in range(y1,y2):
+        for x in range(x1, x2):
+            for y in range(y1, y2):
                 self.drawImage(image, x * image_width, y * image_height, paralex)
-    
-    def drawCircle(self, colour, pos, radius, paralex = 1):
+
+    def drawCircle(self, colour, pos, radius, paralex=1):
         coords = self.getScreenCoords(pos[0], pos[1], paralex)
         pygame.draw.circle(self.screen, colour, coords, radius, 1)
 
-    def getScreenCoords(self, x, y, paralex = 1):
+    def getScreenCoords(self, x, y, paralex=1):
         return (x - (self.camera_area.x / paralex), y - (self.camera_area.y / paralex))
 
+    def shake_camera(self, strength, duration):
+        """Shake the camera with a given strength and duration."""
+        self.shake_strength = strength
+        self.shake_duration = duration
+
+    def apply_shake(self):
+        """Apply the shake effect to the camera."""
+        if self.shake_duration > 0:
+            shake_x = random.randint(-self.shake_strength, self.shake_strength)
+            shake_y = random.randint(-self.shake_strength, self.shake_strength)
+            self.target_x += shake_x
+            self.target_y += shake_y
+            self.shake_duration -= 1

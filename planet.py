@@ -20,7 +20,7 @@ class Planets(pygame.sprite.Sprite):
         self.planet_rect = self.planet_image.get_rect()
         self.planet_distance = 0
 
-        self.total_planets = 8 #how many images are in the sprite sheet
+        self.total_planets = 10 #how many images are in the sprite sheet
         self.total_effects = 4
         self.planet_image_width = self.planet_image.get_width()
         self.effect_image_width = self.effect_image.get_width()
@@ -57,7 +57,7 @@ class Planets(pygame.sprite.Sprite):
             self.effect_img.append(self.effect_image.subsurface(self.each_effect_img))
 
         # Assign effects to planets
-        effect_assignments = [0, 1, 1, 2, 3, 3, 3, 3]
+        effect_assignments = [0, 0, 1, 1, 2, 2, 3, 3, 3, 3]
         for planet_key, planet_data in self.planets_dict.items():
             for i, effect_index in enumerate(effect_assignments):
                 if planet_data['image_number'] == i:
